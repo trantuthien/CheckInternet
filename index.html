@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ping</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="utf-8"/>
+    <link href="https://plus.google.com/+EllyzaVn" rel="publisher"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+    <!--    <link rel="stylesheet" type="text/css" href="css/grallery.css">-->
+    <script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
+    <!--<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>-->
+
+    <!--<script type="text/javascript" src="./ping.js"></script>-->
+
+    <!--<script type="text/babel">-->
+    <script type="text/javascript">
+
+        function request_image(url) {
+            return new Promise(function (resolve, reject) {
+                var img = new Image();
+                img.onload = function () {
+                    resolve(img);
+                };
+                img.onerror = function () {
+                    reject(url);
+                };
+                img.src = url + '?random-no-cache=' + Math.floor((1 + Math.random()) * 0x10000).toString(16);
+            });
+        }
+
+
+        function ping(url, multiplier) {
+            return new Promise(function (resolve, reject) {
+                var start = (new Date()).getTime();
+                var response = function () {
+                    var delta = ((new Date()).getTime() - start);
+                    delta *= (multiplier || 1);
+                    resolve(delta);
+                };
+                request_image(url).then(response).catch(response);
+
+                // Set a timeout for max-pings, 5s.
+                setTimeout(function () {
+                    reject(Error('Timeout'));
+                }, 5000);
+            });
+        }
+        function nhancoupon() {
+            var email = $('#ely_coupon').val();
+            // ping('http://edumall.vn').then(function(delta) {
+            ping(email).then(function (delta) {
+                console.log(email + ' Ping time was ' + String(delta) + ' ms');
+                if (delta > 3000)
+                    $("#ketqua").text("Weak");
+                else if (delta > 1500)
+                    $("#ketqua").text("Normal");
+                else if (delta > 100)
+                    $("#ketqua").text("Good");
+                else
+                    $("#ketqua").text("Excelent");
+            }).catch(function (err) {
+                console.error('Could not ping remote URL', err);
+            });
+        }
+
+
+        $(document).ready(function () {
+            $("#bunaa").click(function () {
+                console.log('click');
+               setInterval(function(){
+                   nhancoupon();
+               }, 2000);
+            });
+
+        });
+        /*var CommentBox = React.createClass({
+         getInitialState: function () {
+         return {ketnoi: 'tot', email: 'http://edumall.vn'};
+         },
+
+         handleEmailChange: function (e) {
+         this.setState({email: e.target.value});
+         },
+
+         handleSubmit: function (e) {
+         e.preventDefault();
+         var email = this.state.email;
+         setInterval(function () {
+         ping(email).then(function (delta) {
+         console.log(email + ' Ping time was ' + String(delta) + ' ms');
+         if (delta > 900)
+         this.ketnoi = 'yeu';
+         else if (delta > 500)
+         this.ketnoi = 'trung binh';
+         else
+         this.ketnoi = 'tot';
+         }).catch(function (err) {
+         console.error('Could not ping remote URL', err);
+         });
+         }, 3000);
+         },
+
+         render: function () {
+         return (
+         <div className="commentBox">
+         <h1>Ket Noi</h1>
+         <h2>{this.state.ketnoi} </h2>
+
+         <form onSubmit={this.handleSubmit}>
+         <div className="form-group">
+         <input type="text" className="form-control" id="ely_coupon"
+         placeholder="Link" value={this.state.email}
+         onChange={this.handleEmailChange}/>
+         </div>
+         <ul className="list-inline">
+         <li>
+         <button value="Post" type="submit" className="btn btn-info">Nhận Ưu Đãi</button>
+         </li>
+         </ul>
+         </form>
+         </div>
+         );
+         }
+         });
+
+         //        ReactDOM.render(
+         //                <CommentBox />,
+         //                document.getElementById('status')
+         //        );
+         */
+    </script>
+
+</head>
+<body class="container">
+<div id="status"></div>
+
+<input type="text" class="form-control" id="ely_coupon" value="http://edumall.vn"/>
+<a href="#" id="bunaa">Nhấn vào đây (1 lần thôi)</a>
+<div id="ketqua"></div>
+</body>
+</html>
